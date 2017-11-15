@@ -24,7 +24,8 @@ function HtmlWebpackPlugin (options) {
     chunks: 'all',
     excludeChunks: [],
     title: 'Webpack App',
-    xhtml: false
+    xhtml: false,
+    cssChunk: [],
   }, options);
 }
 
@@ -463,6 +464,13 @@ HtmlWebpackPlugin.prototype.htmlWebpackPluginAssets = function (compilation, chu
   // requires the same css.
   assets.css = _.uniq(assets.css);
 
+  // sort css chunk
+  if (assets.css.length > 0 && this.options.cssChunk.length > 0) {
+    var cssFullPathChunk = this.options.cssChunk.map(css => `${publicPath}${css}`);
+    assets.css = assets.css.sort(function (a, b) {
+      return cssFullPathChunk.indexOf(a) - cssFullPathChunk.indexOf(b);
+    });
+  }
   return assets;
 };
 
